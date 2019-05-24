@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 
 namespace WebApiExcel.Controllers
 {
@@ -12,9 +13,29 @@ namespace WebApiExcel.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult Excel1()
         {
-            return new string[] { "value1", "value2" };
+            var columnasEncabezado = new String[]
+            {
+                "AR",
+                "NEGOCIO",
+                "STATUS"
+            };
+            byte[] result;
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Servicios");
+                using (var cells = worksheet.Cells[1, 1, 1, 5])
+                {
+                    cells.Style.Font.Bold = true;
+                }
+                for (var i = 0; i < columnasEncabezado.Count(); i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = columnasEncabezado[i];
+                }
+
+            }
         }
 
         // GET api/values/5
